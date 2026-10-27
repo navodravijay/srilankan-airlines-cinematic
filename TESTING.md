@@ -1,4 +1,16 @@
-# Cinematic V2 — Test Results
+# Cinematic V3 — Test Results
+
+## V3 verification — October 27, 2026
+
+- `node --check app.js` passes.
+- Headless Chromium 155 loaded the project over a local HTTP server with the general security headers from `_headers`. Google Fonts requests were deliberately blocked; these checks used system fallback fonts.
+- Desktop at 1440×900: pointer movement updates hero depth and destination-card tilt. Computed card transforms include 3D rotation after the reveal; hover activates shine and image zoom.
+- Touch at 390×844 and 1280×900: hero pointer depth, card tilt, shine and image zoom stay disabled. Cards remain visible, with no horizontal overflow.
+- Reduced motion at 1440×900: pointer depth, tilt, shine and image zoom stay disabled; cards remain visible, with no horizontal overflow.
+- Mobile navigation opens with `aria-expanded="true"` and closes with Escape.
+- No JavaScript runtime exceptions occurred in the four browser profiles. These checks do not verify the Cloudflare deployment or downloaded Google Fonts.
+
+## Archived V2 verification
 
 **Date:** October 24, 2026  
 **Project:** Above the Ordinary — Unofficial SriLankan Airlines Concept  
@@ -19,7 +31,7 @@
 
 ## Environment limits and implementation choices
 
-- This runtime's Chromium blocks `http://127.0.0.1` navigation with `ERR_BLOCKED_BY_ADMINISTRATOR`, so the tests loaded the **same project HTML/CSS/JS plus local images into an in-memory Chromium page**. This verifies browser rendering and animation behavior, but **does not replace testing the deployed URL in a real browser**, including asset loading through the actual HTTP server and production CSP.
+- The earlier V2 runtime's Chromium blocked `http://127.0.0.1` navigation with `ERR_BLOCKED_BY_ADMINISTRATOR`, so those tests loaded the **same project HTML/CSS/JS plus local images into an in-memory Chromium page**. This verifies browser rendering and animation behavior, but **does not replace testing the deployed URL in a real browser**, including asset loading through the actual HTTP server and production CSP.
 - The GSAP ScrollTrigger code envisaged in the earlier blueprint is **not included** because no local library was available and this environment could not download it. The V2 project instead uses one native sticky scene plus an offline scroll-progress engine. No two animation systems compete over the same elements.
 - The cinematic portal is a stylized transition between photographic still images, not actual moving footage or real 3D geometry.
 - Generated concept imagery is not verified as an exact aircraft/livery reference; check permitted branding and image use before publication.

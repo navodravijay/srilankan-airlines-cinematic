@@ -10,6 +10,7 @@ An **unofficial portfolio redesign concept** inspired by Sri Lanka's national ai
 - Native-scroll-pinned three-chapter journey with aircraft approach, approved exterior fuselage zoom, and cloud-only window portal reveal (no cabin imagery).
 - Smooth reverse-scroll choreography derived from scroll progress (no scroll hijacking).
 - Mobile navigation, adaptive scenes and interactive destination cards.
+- V3 desktop pointer depth in the hero, plus destination-card 3D tilt, light shine and image zoom. These effects are disabled for touch pointers, viewports up to 800 px and reduced-motion preferences.
 - Reduced-motion fallback and keyboard navigation.
 - Optimized WebP imagery, including your selected close-up A330 exterior with no cabin visible in that exterior shot.
 - Cloudflare Pages-compatible `_headers` with CSP and baseline hardening.
@@ -26,7 +27,7 @@ Open http://localhost:8080/ in a browser. Avoid opening `index.html` directly as
 
 ## Publish with GitHub and Cloudflare Pages
 
-Make a new GitHub repository for this **standalone project**. Upload all files from this folder, preserving `assets/` and `_headers`. Connect it to a Cloudflare Pages project:
+The source repository is [navodravijay/srilankan-airlines-cinematic](https://github.com/navodravijay/srilankan-airlines-cinematic). Keep all files from this folder in the repository root, preserving `assets/` and `_headers`. Connect it to a Cloudflare Pages project:
 
 - Framework preset: **None**
 - Production branch: **main**

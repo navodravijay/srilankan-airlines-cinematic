@@ -1,6 +1,6 @@
 "use strict";
 /**
- * NV SHARP SOLUTIONS — CINEMATIC V2
+ * NV SHARP SOLUTIONS — CINEMATIC V3
  * Offline-capable native scroll choreography. A single sticky panel owns pinning;
  * every scene transform is determined by normalized scroll progress. No GSAP or
  * third-party runtime is required, and scrolling remains fully native.
@@ -12,6 +12,7 @@ const smooth = (a, b, p) => {
 };
 const blend = (a, b, t) => a + (b - a) * clamp(t);
 const windowMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const desktopPointer = window.matchMedia('(min-width: 801px) and (hover: hover) and (pointer: fine)');
 const story = document.querySelector('[data-story]');
 const header = document.getElementById('header');
 const aircraft = document.querySelector('.flight-aircraft');
@@ -25,6 +26,9 @@ const glass = document.querySelector('.window-section');
 const glassBackdrop = glass?.querySelector('.window-bg');
 const closing = document.querySelector('.outro');
 const closingBackdrop = closing?.querySelector('.outro-sky');
+const hero = document.querySelector('.hero');
+const heroPhoto = document.querySelector('.hero-photo');
+const destinationCards = [...document.querySelectorAll('.destination-card')];
 const menuButton = document.getElementById('menu-toggle');
 const menu = document.getElementById('mobile-menu');
 let displayedProgress = 0;
@@ -131,6 +135,42 @@ function initMotion() {
     return;
   }
   document.documentElement.classList.add('motion-enabled');
+  // Restrained pointer depth on desktop: foreground copy and image move at
+  // different rates, while touch devices keep their native scrolling untouched.
+  if (hero && heroPhoto && desktopPointer.matches) {
+    hero.addEventListener('pointermove', event => {
+      if (!desktopPointer.matches || event.pointerType === 'touch') return;
+      const bounds = hero.getBoundingClientRect();
+      const x = (event.clientX - bounds.left) / bounds.width - .5;
+      const y = (event.clientY - bounds.top) / bounds.height - .5;
+      heroPhoto.style.setProperty('--hero-x', `${(x * -1.2).toFixed(2)}%`);
+      heroPhoto.style.setProperty('--hero-y', `${(y * -1.2).toFixed(2)}%`);
+      hero.style.setProperty('--hero-glow-x', `${(event.clientX - bounds.left).toFixed(0)}px`);
+      hero.style.setProperty('--hero-glow-y', `${(event.clientY - bounds.top).toFixed(0)}px`);
+    }, { passive: true });
+    hero.addEventListener('pointerleave', () => {
+      heroPhoto.style.setProperty('--hero-x', '0%');
+      heroPhoto.style.setProperty('--hero-y', '0%');
+    }, { passive: true });
+  }
+  if (desktopPointer.matches) {
+    destinationCards.forEach(card => {
+      card.addEventListener('pointermove', event => {
+        if (!desktopPointer.matches || event.pointerType === 'touch') return;
+        const rect = card.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width;
+        const y = (event.clientY - rect.top) / rect.height;
+        card.style.setProperty('--tilt-x', `${((.5 - y) * 3).toFixed(2)}deg`);
+        card.style.setProperty('--tilt-y', `${((x - .5) * 3).toFixed(2)}deg`);
+        card.style.setProperty('--shine-x', `${(x * 100).toFixed(1)}%`);
+        card.style.setProperty('--shine-y', `${(y * 100).toFixed(1)}%`);
+      }, { passive: true });
+      card.addEventListener('pointerleave', () => {
+        card.style.setProperty('--tilt-x', '0deg');
+        card.style.setProperty('--tilt-y', '0deg');
+      }, { passive: true });
+    });
+  }
   displayedProgress = story ? progressOf(story) : 0;
   // Apply cinematic reveal only to content we can observe.
   if ('IntersectionObserver' in window) {
